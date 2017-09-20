@@ -35,9 +35,9 @@ def classifier(learning_rate=1e-3, use_dropout=True):
         h_pool1 = tf.nn.dropout(h_pool1, prob)
 
 
-    W_conv2 = tf.get_variable(name='Wconv2', shape=[5, 5, 32, 64], dtype=tf.float32,
+    W_conv2 = tf.get_variable(name='Wconv2', shape=[5, 5, 32, 32], dtype=tf.float32,
                              initializer=tf.contrib.layers.xavier_initializer_conv2d())
-    b_conv2 = tf.get_variable(name='bconv2', shape=[64], dtype=tf.float32, initializer=tf.zeros_initializer)
+    b_conv2 = tf.get_variable(name='bconv2', shape=[32], dtype=tf.float32, initializer=tf.zeros_initializer)
 
     h_conv2 = tf.nn.relu(tf.nn.conv2d(h_pool1, W_conv2, strides=[1,1,1,1], padding='SAME') + b_conv2)
     h_pool2 = tf.nn.max_pool(h_conv2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
@@ -45,11 +45,11 @@ def classifier(learning_rate=1e-3, use_dropout=True):
         h_pool2 = tf.nn.dropout(h_pool2, prob)
 
 
-    W_fc1 = tf.get_variable(name='Wfc1', shape=[8*8*64, 1024], dtype=tf.float32, 
+    W_fc1 = tf.get_variable(name='Wfc1', shape=[8*8*32, 256], dtype=tf.float32, 
                             initializer=tf.contrib.layers.xavier_initializer())
-    b_fc1 = tf.get_variable(name='bfc1', shape=[1024], dtype=tf.float32, initializer=tf.zeros_initializer)
+    b_fc1 = tf.get_variable(name='bfc1', shape=[256], dtype=tf.float32, initializer=tf.zeros_initializer)
 
-    h_pool2_flat = tf.reshape(h_pool2, shape=[-1, 8*8*64])
+    h_pool2_flat = tf.reshape(h_pool2, shape=[-1, 8*8*32])
 
     h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
 
@@ -57,7 +57,7 @@ def classifier(learning_rate=1e-3, use_dropout=True):
         h_fc1 = tf.nn.dropout(h_fc1, prob)
 
 
-    W_fc2 = tf.get_variable(name='Wfc2', shape=[1024, 10], dtype=tf.float32, 
+    W_fc2 = tf.get_variable(name='Wfc2', shape=[256, 10], dtype=tf.float32, 
                             initializer=tf.contrib.layers.xavier_initializer())
     b_fc2 = tf.get_variable(name='bfc2', shape=[10], dtype=tf.float32, initializer=tf.zeros_initializer)
 
