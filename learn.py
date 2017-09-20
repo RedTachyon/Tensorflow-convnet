@@ -21,8 +21,8 @@ def load_all_data(path_train, path_test, n_valid=1000):
     """
     Loads train and test data from the given paths, normalizes them properly.
     """
-    data, mean, std, labels = extract_and_norm_data('train_32x32.mat')
-    test_data, test_labels = extract_test_data('test_32x32.mat', mean, std)
+    data, mean, std, labels = extract_and_norm_data(path_train)
+    test_data, test_labels = extract_test_data(path_test, mean, std)
     
     train_data, train_labels, valid_data, valid_labels = train_validation_split(data, labels, n_valid)
     return train_data, train_labels, valid_data, valid_labels, test_data, test_labels
