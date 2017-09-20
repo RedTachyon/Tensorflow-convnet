@@ -69,13 +69,16 @@ def train_model(num_epochs, batch_size, learning_rate):
                                                                                                'test_32x32.mat')
     model, train_op, accuracy, X, y, prob = classifier(1e-3, True)
     
+    num_iters = int(np.ceil(train_data.shape[0] / batch_size) * num_epochs)
+    
     with tf.Session() as sess:
         print("Training the model")
         sess.run(model)
         accs = np.array([])
         val_accs = np.array([])
-        for step in tqdm(range(500)):
-            data_batch, label_batch = get_batch(train_data, train_labels, step, 128)
+        
+        for step in tqdm(range(num_iters)):
+            data_batch, label_batch = get_batch(train_data, train_labels, step, batch_size)
             _, acc = sess.run([train_op, accuracy], feed_dict={X: data_batch, y: label_batch, prob: .8})
             accs = np.append(accs, acc)
             if not step % 10:
